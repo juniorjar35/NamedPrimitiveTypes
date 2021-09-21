@@ -106,6 +106,10 @@ public class NPTBatch {
 		return data.isEmpty();
 	}
 	
+	public Class<?> getKeyType(String name){
+		return data.get(name).getClass();
+	}
+	
 	public int getSize() {
 		return data.size();
 	}

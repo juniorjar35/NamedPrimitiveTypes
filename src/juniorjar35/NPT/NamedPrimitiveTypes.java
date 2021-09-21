@@ -23,6 +23,7 @@ public class NamedPrimitiveTypes {
 	
 	public static String readString(DataInput in) throws IOException {
 		int len = in.readByte();
+		if (len < 0) throw new IOException("Negative length!");
 		byte[] a = new byte[len];
 		in.readFully(a, 0, len);
 		return new String(a,StandardCharsets.US_ASCII);
