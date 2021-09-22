@@ -14,7 +14,7 @@ public class NPTBatch {
 	
 	public NPTBatch() {};
 	
-	public static final short NPT_VERSION = 0x0102;
+	public static final short NPT_SAVE_VERSION = 0x0102;
 	private NPTBatch parent = null;
 	protected Map<String, Object> data = new HashMap<String, Object>();
 	
@@ -53,7 +53,7 @@ public class NPTBatch {
 	
 	public void read(DataInput in, boolean ignoreVersionCheck) throws IOException {
 		short version = in.readShort();
-		if (version != NPT_VERSION && !ignoreVersionCheck) throw new IOException("Expected version: " + Integer.toHexString(NPT_VERSION) + "|| Got: " + Integer.toHexString(version));
+		if (version != NPT_SAVE_VERSION && !ignoreVersionCheck) throw new IOException("Expected version: " + Integer.toHexString(NPT_SAVE_VERSION) + "|| Got: " + Integer.toHexString(version));
 		int count = in.readInt();
 		for (int i = 0; i < count; i++) {
 			readObj(data, in);
@@ -61,6 +61,7 @@ public class NPTBatch {
 	}
 	
 	private void writeObj(String name, Object v, DataOutput out) throws IOException {
+		if (v == null) return;
 		writeString(name, out);
 		if (v instanceof Integer) {out.writeByte('I'); out.writeInt((Integer)v);};
 		if (v instanceof Long) {out.writeByte('L'); out.writeLong((Long)v);};
@@ -90,7 +91,7 @@ public class NPTBatch {
 	}
 	
 	public void write(DataOutput out) throws IOException {
-		out.writeShort(NPT_VERSION);
+		out.writeShort(NPT_SAVE_VERSION);
 		out.writeInt(data.size());
 		Set<Map.Entry<String, Object>> entries = data.entrySet();
 		for (Map.Entry<String, Object> entry : entries) {
@@ -106,8 +107,16 @@ public class NPTBatch {
 		return data.isEmpty();
 	}
 	
+	private Object get(String name) {
+		return data.get(name);
+	}
+	
 	public Class<?> getKeyType(String name){
-		return data.get(name).getClass();
+		return get(name).getClass();
+	}
+	
+	public boolean isNull(String name) {
+		return get(name) == null;
 	}
 	
 	public int getSize() {
@@ -119,7 +128,12 @@ public class NPTBatch {
 	}
 	
 	public short getShort(String name) {
-		return (short) data.get(name);
+		return this.getShort(name, (short) 0);
+	}
+	
+	public short getShort(String name, short defaultValue) {
+		Object v = get(name);
+		if (v != null && v instanceof Short) return (short) v; else return defaultValue;
 	}
 	
 	public void setInteger(String name, int v) {
@@ -127,15 +141,25 @@ public class NPTBatch {
 	}
 	
 	public int getInteger(String name) {
-		return (int) data.get(name);
+		return this.getInteger(name, 0);
 	}
-
+	
+	public int getInteger(String name, int defaultValue) {
+		Object v = get(name);
+		if (v != null && v instanceof Integer) return (int) v; else return defaultValue;
+	}
+	
 	public void setLong(String name, long v) {
 		data.put(name, v);
 	}
 	
 	public long getLong(String name) {
-		return (long) data.get(name);
+		return this.getLong(name, 0L);
+	}
+	
+	public long getLong(String name, long defaultValue) {
+		Object v = get(name);
+		if (v != null && v instanceof Long) return (long) v; else return defaultValue;
 	}
 	
 	public void setFloat(String name, float v) {
@@ -143,7 +167,12 @@ public class NPTBatch {
 	}
 	
 	public float getFloat(String name) {
-		return (float) data.get(name);
+		return this.getFloat(name, 0.0f);
+	}
+	
+	public float getFloat(String name, float defaultValue) {
+		Object v = get(name);
+		if (v != null && v instanceof Float) return (float) v; else return defaultValue;
 	}
 	
 	public void setDouble(String name, double v) {
@@ -151,7 +180,12 @@ public class NPTBatch {
 	}
 	
 	public double getDouble(String name) {
-		return (double) data.get(name);
+		return this.getDouble(name, 0.0D);
+	}
+	
+	public double getDouble(String name, double defaultValue) {
+		Object v = get(name);
+		if (v != null && v instanceof Double) return (double) v; else return defaultValue;
 	}
 	
 	public void setBoolean(String name, boolean v) {
@@ -159,7 +193,12 @@ public class NPTBatch {
 	}
 	
 	public boolean getBoolean(String name) {
-		return (boolean) data.get(name);
+		return this.getBoolean(name, false);
+	}
+	
+	public boolean getBoolean(String name, boolean defaultValue) {
+		Object v = get(name);
+		if (v != null && v instanceof Boolean) return (boolean) v; else return defaultValue;
 	}
 	
 	public void setCharacter(String name, char v) {
@@ -167,7 +206,12 @@ public class NPTBatch {
 	}
 	
 	public char getCharacter(String name) {
-		return (char) data.get(name);
+		return this.getCharacter(name, (char) 0);
+	}
+	
+	public char getCharacter(String name, char defaultValue) {
+		Object v = get(name);
+		if (v != null && v instanceof Character) return (char) v; else return defaultValue;
 	}
 	
 	public void setByte(String name, byte v) {
@@ -175,7 +219,12 @@ public class NPTBatch {
 	}
 	
 	public byte getByte(String name) {
-		return (byte) data.get(name);
+		return this.getByte(name, (byte) 0);
+	}
+	
+	public byte getByte(String name, byte defaultValue) {
+		Object v = get(name);
+		if (v != null && v instanceof Byte) return (byte) v; else return defaultValue;
 	}
 	
 	public void setByteArray(String name, byte[] array) {
@@ -183,7 +232,12 @@ public class NPTBatch {
 	}
 	
 	public byte[] getByteArray(String name) {
-		return (byte[]) data.get(name);
+		return this.getByteArray(name, null);
+	}
+	
+	public byte[] getByteArray(String name, byte[] defaultValue) {
+		Object v = get(name);
+		if (v != null && v instanceof byte[]) return (byte[]) v; else return defaultValue;
 	}
 	
 	public void setIntegerArray(String name, int[] v) {
@@ -191,7 +245,12 @@ public class NPTBatch {
 	}
 	
 	public int[] getIntegerArray(String name) {
-		return (int[]) data.get(name);
+		return this.getIntegerArray(name, null);
+	}
+	
+	public int[] getIntegerArray(String name, int[] defaultValue) {
+		Object v = get(name);
+		if (v != null && v instanceof int[]) return (int[]) v; else return defaultValue;
 	}
 	
 	public void setFloatArray(String name, float[] v) {
@@ -199,7 +258,12 @@ public class NPTBatch {
 	}
 	
 	public float[] getFloatArray(String name) {
-		return (float[]) data.get(name);
+		return this.getFloatArray(name, null);
+	}
+	
+	public float[] getFloatArray(String name, float[] defaultValue) {
+		Object v = get(name);
+		if (v != null && v instanceof float[]) return (float[]) v; else return defaultValue;
 	}
 	
 	public void setShortArray(String name, short[] v) {
@@ -207,7 +271,12 @@ public class NPTBatch {
 	}
 	
 	public short[] getShortArray(String name) {
-		return (short[]) data.get(name);
+		return this.getShortArray(name, null);
+	}
+	
+	public short[] getShortArray(String name, short[] defaultValue) {
+		Object v = get(name);
+		if (v != null && v instanceof short[]) return (short[]) v; else return defaultValue;
 	}
 	
 	public void setDoubleArray(String name, double[] v) {
@@ -215,7 +284,12 @@ public class NPTBatch {
 	}
 	
 	public double[] getDoubleArray(String name) {
-		return (double[]) data.get(name);
+		return this.getDoubleArray(name, null);
+	}
+	
+	public double[] getDoubleArray(String name, double[] defaultValue) {
+		Object v = get(name);
+		if (v != null && v instanceof double[]) return (double[]) v; else return defaultValue;
 	}
 	
 	public void setLongArray(String name, long[] v) {
@@ -223,7 +297,12 @@ public class NPTBatch {
 	}
 	
 	public long[] getLongArray(String name) {
-		return (long[]) data.get(name);
+		return this.getLongArray(name, null);
+	}
+	
+	public long[] getLongArray(String name, long[] defaultValue) {
+		Object v = get(name);
+		if (v != null && v instanceof long[]) return (long[]) v; else return defaultValue;
 	}
 	
 	public void setCharacterArray(String name, char[] v) {
@@ -231,7 +310,12 @@ public class NPTBatch {
 	}
 	
 	public char[] getCharacterArray(String name) {
-		return (char[]) data.get(name);
+		return this.getCharacterArray(name, null);
+	}
+	
+	public char[] getCharacterArray(String name, char[] defaultValue) {
+		Object v = get(name);
+		if (v != null && v instanceof char[]) return (char[]) v; else return defaultValue;
 	}
 	
 	public void setBooleanArray(String name, boolean[] v) {
@@ -239,7 +323,12 @@ public class NPTBatch {
 	}
 	
 	public boolean[] getBooleanArray(String name) {
-		return (boolean[]) data.get(name);
+		return this.getBooleanArray(name, null);
+	}
+	
+	public boolean[] getBooleanArray(String name, boolean[] defaultValue) {
+		Object v = get(name);
+		if (v != null && v instanceof boolean[]) return (boolean[]) v; else return defaultValue;
 	}
 	
 	public void setString(String name, String v) {
@@ -247,7 +336,12 @@ public class NPTBatch {
 	}
 	
 	public String getString(String name) {
-		return (String) data.get(name);
+		return this.getString(name, null);
+	}
+	
+	public String getString(String name, String defaultValue) {
+		Object v = get(name);
+		if (v != null && v instanceof String) return (String) v; else return defaultValue;
 	}
 	
 	public void setBatch(String name, NPTBatch v) {
@@ -257,7 +351,12 @@ public class NPTBatch {
 	}
 	
 	public NPTBatch getBatch(String name) {
-		return (NPTBatch) data.get(name);
+		return this.getBatch(name, null);
+	}
+	
+	public NPTBatch getBatch(String name, NPTBatch defaultValue) {
+		Object v = get(name);
+		if (v != null && v instanceof NPTBatch) return (NPTBatch) v; else return defaultValue;
 	}
 	
 }
