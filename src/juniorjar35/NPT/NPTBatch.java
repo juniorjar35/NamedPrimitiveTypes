@@ -6,6 +6,7 @@ import static juniorjar35.NPT.NamedPrimitiveTypes.writeString;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -105,6 +106,14 @@ public class NPTBatch {
 	
 	public boolean isEmpty() {
 		return data.isEmpty();
+	}
+	
+	public String[] getAllKeys() {
+		return data.keySet().toArray(new String[0]);
+	}
+	
+	public Set<Map.Entry<String, Object>> getAllEntries(){
+		return Collections.unmodifiableSet(data.entrySet());
 	}
 	
 	private Object get(String name) {
