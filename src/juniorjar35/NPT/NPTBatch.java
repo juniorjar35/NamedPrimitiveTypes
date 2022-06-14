@@ -15,29 +15,148 @@ public class NPTBatch {
 	
 	public NPTBatch() {};
 	
-	public static final short NPT_SAVE_VERSION = 0x0102;
+	public static final short NPT_SAVE_VERSION = 0x0103;
 	private NPTBatch parent = null;
 	protected Map<String, Object> data = new HashMap<String, Object>();
+	
+	/*
+	 
+	 Data Signatures
+	 
+	 B = Byte
+	 I = Integer
+	 L = Long
+	 S = Short
+	 F = Float
+	 D = Double
+	 Z = Boolean
+	 C = Character
+	 
+	 i = Integer array
+	 l = Long array
+	 s = Short array
+	 f = Float array
+	 d = Double array
+	 z = Boolean array
+	 c = Character array
+	 b = Byte array
+	 
+	 X = UTF String
+	 J = NPTBatch
+	 
+	 */
 	
 	private void readObj(Map<String, Object> out, DataInput in) throws IOException {
 		String name = readString(in);
 		byte sig = in.readByte();
-		if (sig == 'I') out.put(name, in.readInt());
-		if (sig == 'L') out.put(name, in.readLong());
-		if (sig == 'S') out.put(name, in.readShort());
-		if (sig == 'F') out.put(name, in.readFloat());
-		if (sig == 'D') out.put(name, in.readDouble());
-		if (sig == 'B') out.put(name, in.readBoolean());
-		if (sig == 'S') out.put(name, in.readChar());
-		if (sig == 'i') {int c = in.readInt(); int[] a = new int[c]; for (int i = 0; i < c; i++) {a[i] = in.readInt();}; out.put(name, a);};
-		if (sig == 'l') {int c = in.readInt(); long[] a = new long[c]; for (int i = 0; i < c; i++) {a[i] = in.readLong();}; out.put(name, a);};
-		if (sig == 's') {int c = in.readInt(); short[] a = new short[c]; for (int i = 0; i < c; i++) {a[i] = in.readShort();}; out.put(name, a);};
-		if (sig == 'f') {int c = in.readInt(); float[] a = new float[c]; for (int i = 0; i < c; i++) {a[i] = in.readFloat();}; out.put(name, a);};
-		if (sig == 'd') {int c = in.readInt(); double[] a = new double[c]; for (int i = 0; i < c; i++) {a[i] = in.readDouble();}; out.put(name, a);};
-		if (sig == 'b') {int c = in.readInt(); boolean[] a = new boolean[c]; for (int i = 0; i < c; i++) {a[i] = in.readBoolean();}; out.put(name, a);};
-		if (sig == 'c') {int c = in.readInt(); char[] a = new char[c]; for (int i = 0; i < c; i++) {a[i] = in.readChar();}; out.put(name, a);};
-		if (sig == 'b') {int c = in.readInt(); byte[] a = new byte[c]; for (int i = 0; i < c; i++) {a[i] = in.readByte();}; out.put(name, a);};
-		if (sig == 'X') out.put(name, in.readUTF());
+		if (sig == 'B') {
+			out.put(name, in.readByte());
+			return;
+		}
+		if (sig == 'I') {
+			out.put(name, in.readInt());
+			return;
+		}
+		if (sig == 'L') {
+			out.put(name, in.readLong());
+			return;
+		}
+		if (sig == 'S') {
+			out.put(name, in.readShort());
+			return;
+		}
+		if (sig == 'F') {
+			out.put(name, in.readFloat());
+			return;
+		}
+		if (sig == 'D') {
+			out.put(name, in.readDouble());
+			return;
+		}
+		if (sig == 'Z') {
+			out.put(name, in.readBoolean());
+			return;
+		}
+		if (sig == 'C') {
+			out.put(name, in.readChar());
+			return;
+		}
+		if (sig == 'i') {
+			int c = in.readInt();
+			int[] a = new int[c];
+			for (int i = 0; i < c; i++) {
+				a[i] = in.readInt();
+			}; 
+			out.put(name, a);
+			return;
+		};
+		if (sig == 'l') {
+			int c = in.readInt();
+			long[] a = new long[c];
+			for (int i = 0; i < c; i++) {
+				a[i] = in.readLong();
+			}; 
+			out.put(name, a);
+			return;
+		};
+		if (sig == 's') {
+			int c = in.readInt();
+			short[] a = new short[c];
+			for (int i = 0; i < c; i++) {
+				a[i] = in.readShort();
+			};
+			out.put(name, a);
+			return;
+		};
+		if (sig == 'f') {
+			int c = in.readInt();
+			float[] a = new float[c];
+			for (int i = 0; i < c; i++) {
+				a[i] = in.readFloat();
+			};
+			out.put(name, a);
+			return;
+		};
+		if (sig == 'd') {
+			int c = in.readInt();
+			double[] a = new double[c];
+			for (int i = 0; i < c; i++) {
+				a[i] = in.readDouble();
+			};
+			out.put(name, a);
+			return;
+		};
+		if (sig == 'z') {
+			int c = in.readInt();
+			boolean[] a = new boolean[c];
+			for (int i = 0; i < c; i++) {
+				a[i] = in.readBoolean();
+			};
+			out.put(name, a);
+			return;
+		};
+		if (sig == 'c') {
+			int c = in.readInt();
+			char[] a = new char[c];
+			for (int i = 0; i < c; i++) {
+				a[i] = in.readChar();
+			}; 
+			out.put(name, a);
+			return;
+		};
+		if (sig == 'b') {
+			int c = in.readInt();
+			byte[] a = new byte[c];
+			for (int i = 0; i < c; i++) {
+				a[i] = in.readByte();
+			}; 
+			out.put(name, a);
+			return;
+		};
+		if (sig == 'X') {
+			out.put(name, in.readUTF());
+			return;
+		}
 		if (sig == 'J') {
 			NPTBatch b = new NPTBatch();
 			int c = in.readInt();
@@ -45,6 +164,7 @@ public class NPTBatch {
 				readObj(b.data, in);
 			}
 			out.put(name, b);
+			return;
 		}
 	}
 	
@@ -64,22 +184,23 @@ public class NPTBatch {
 	private void writeObj(String name, Object v, DataOutput out) throws IOException {
 		if (v == null) return;
 		writeString(name, out);
-		if (v instanceof Integer) {out.writeByte('I'); out.writeInt((Integer)v);};
-		if (v instanceof Long) {out.writeByte('L'); out.writeLong((Long)v);};
-		if (v instanceof Short) {out.writeByte('S'); out.writeShort((Short)v);};
-		if (v instanceof Float) {out.writeByte('F'); out.writeFloat((Float)v);};
-		if (v instanceof Double) {out.writeByte('D'); out.writeDouble((Double)v);};
-		if (v instanceof Boolean) {out.writeByte('B'); out.writeBoolean((Boolean)v);};
-		if (v instanceof Character) {out.writeByte('C'); out.writeChar((Character)v);};
-		if (v instanceof int[]) {out.writeByte('i'); int[] r = (int[]) v; out.writeInt(r.length); for (int w : r) out.writeInt(w);};
-		if (v instanceof long[]) {out.writeByte('l'); long[] r = (long[]) v; out.writeInt(r.length); for (long w : r) out.writeLong(w);};
-		if (v instanceof short[]) {out.writeByte('s'); short[] r = (short[]) v; out.writeInt(r.length); for (short w : r) out.writeShort(w);};
-		if (v instanceof float[]) {out.writeByte('f'); float[] r = (float[]) v; out.writeInt(r.length); for (float w : r) out.writeFloat(w);};
-		if (v instanceof double[]) {out.writeByte('d'); double[] r = (double[]) v; out.writeInt(r.length); for (double w : r) out.writeDouble(w);};
-		if (v instanceof boolean[]) {out.writeByte('b'); boolean[] r = (boolean[]) v; out.writeInt(r.length); for (boolean w : r) out.writeBoolean(w);};
-		if (v instanceof char[]) {out.writeByte('c'); char[] r = (char[]) v; out.writeInt(r.length); for (char w : r) out.writeChar(w);};
-		if (v instanceof byte[]) {out.writeByte('b'); byte[] r = (byte[]) v; out.writeInt(r.length); for (byte w : r) out.writeByte(w);}
-		if (v instanceof String) {out.writeByte('X'); out.writeUTF((String)v);}
+		if (v instanceof Byte) {out.writeByte('B'); out.writeInt((Byte)v); return;};
+		if (v instanceof Integer) {out.writeByte('I'); out.writeInt((Integer)v); return;};
+		if (v instanceof Long) {out.writeByte('L'); out.writeLong((Long)v); return;};
+		if (v instanceof Short) {out.writeByte('S'); out.writeShort((Short)v); return;};
+		if (v instanceof Float) {out.writeByte('F'); out.writeFloat((Float)v); return;};
+		if (v instanceof Double) {out.writeByte('D'); out.writeDouble((Double)v); return;};
+		if (v instanceof Boolean) {out.writeByte('Z'); out.writeBoolean((Boolean)v); return;};
+		if (v instanceof Character) {out.writeByte('C'); out.writeChar((Character)v); return;};
+		if (v instanceof int[]) {out.writeByte('i'); int[] r = (int[]) v; out.writeInt(r.length); for (int w : r) out.writeInt(w); return;};
+		if (v instanceof long[]) {out.writeByte('l'); long[] r = (long[]) v; out.writeInt(r.length); for (long w : r) out.writeLong(w); return;};
+		if (v instanceof short[]) {out.writeByte('s'); short[] r = (short[]) v; out.writeInt(r.length); for (short w : r) out.writeShort(w); return;};
+		if (v instanceof float[]) {out.writeByte('f'); float[] r = (float[]) v; out.writeInt(r.length); for (float w : r) out.writeFloat(w); return;};
+		if (v instanceof double[]) {out.writeByte('d'); double[] r = (double[]) v; out.writeInt(r.length); for (double w : r) out.writeDouble(w); return;};
+		if (v instanceof boolean[]) {out.writeByte('z'); boolean[] r = (boolean[]) v; out.writeInt(r.length); for (boolean w : r) out.writeBoolean(w); return;};
+		if (v instanceof char[]) {out.writeByte('c'); char[] r = (char[]) v; out.writeInt(r.length); for (char w : r) out.writeChar(w); return;}
+		if (v instanceof byte[]) {out.writeByte('b'); byte[] r = (byte[]) v; out.writeInt(r.length); for (byte w : r) out.writeByte(w); return;}
+		if (v instanceof String) {out.writeByte('X'); out.writeUTF((String)v); return;}
 		if (v instanceof NPTBatch) {
 			out.write('J');
 			NPTBatch o = (NPTBatch) v;
